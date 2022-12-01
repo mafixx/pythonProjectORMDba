@@ -64,4 +64,4 @@ if __name__ == "__main__":
             break
 
         else:
-            print(f"Opção inválida: {opcao}.")
+            print(f"Opção inválida: {option}.")
