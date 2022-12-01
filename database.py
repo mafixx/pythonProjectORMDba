@@ -28,7 +28,7 @@ db_name = os.getenv("DB_NAME")
 # String de conexão com o banco de dados
 # Fazemos isso para evitar que as credencias de acesso a serviços externos
 # fiquem expostas no código.
-connection_string = f"mysql+pymysql://{db_user}:{db_pass}:{db_host}:{db_port}/{db_name}"
+connection_string = f"mysql+pymysql://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}"
 
 # Podemos facilmente trocar de banco de dados alterando apenas a connection string
 # connection_string = "sqlite://aula_06.sqlite3"
