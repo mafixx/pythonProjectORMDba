@@ -1,9 +1,9 @@
 from database import engine, Base, session
-from models import User
+from models import User, UserProfile
 
 
 def list_users():
-    # SELECT * FROM tb_usuarios
+    # SELECT * FROM tb_users
     return session.query(User).all()
 
 
@@ -11,13 +11,25 @@ def create_user(email, password):
     # Instanciamos a model que queremos salvar
     user = User(email=email, password=password)
 
-    # Adicionar esse objeto a sessão
+    # Adicionar esse objeto à sessão
     session.add(user)
 
     # Salvando o objeto na tabela
     session.commit()
 
     return user
+
+
+def create_profile(user, first_name, last_name):
+    profile = UserProfile(
+        id=user.id, first_name=first_name, last_name=last_name
+    )
+
+    session.add(profile)
+
+    session.commit()
+
+    return profile
 
 
 if __name__ == "__main__":
@@ -29,11 +41,12 @@ if __name__ == "__main__":
 
         output = """
         INFORME A OPÇÃO DESEJADA:
-            1 - Mostrar usuários cadastrados
-            2 - Inserir um novo usuário
-            3 - Atualizar as informações de um usuário
-            4 - Apagar um usuário
-            5 - Sair
+
+        1 - Mostrar usuários cadastrados
+        2 - Inserir um novo usuário
+        3 - Atualizar as informações de um usuário
+        4 - Apagar um usuário
+        5 - Sair
         """
 
         print(output)
@@ -43,19 +56,27 @@ if __name__ == "__main__":
             users = list_users()
 
             if len(users) == 0:
-                print("NÃO EXISTEM USUÁRIOS CADASTRADOS.")
+                print("NÃO EXISTEM USUÁRIOS CADASTRADOS")
+
             else:
                 for user in users:
-                    print(f"{user.id}) {user.email}")
-                print("*"*50)
+                    # O método get() retorna um registro de acordo com a chave primária
+                    # Ou seja: SELECT * FROM tb_users_profiles WHERE id = ?
+                    # profile = session.query(UserProfile).get(user.id)
+
+                    print(f"{user.profile.first_name} {user.profile.last_name} ({user.email})")
+                print("-" * 50)
 
         elif option == 2:
-            email = input("Informe o e-mail do novo usuário: ")
+            email = input("Informe o email do novo usuário: ")
             password = input("Informe a senha do novo usuário: ")
+            first_name = input("Informe o seu nome: ")
+            last_name = input("Informe o seu sobrenome: ")
 
             user = create_user(email, password)
+            profile = create_profile(user, first_name, last_name)
 
-            print(f"Usuário ({user.id}) {user.email} salvo com sucesso.")
+            print(f"Usuário {profile.first_name} ({user.email}) salvo com sucesso.")
 
         elif option == 3:
             pass
@@ -68,4 +89,4 @@ if __name__ == "__main__":
             break
 
         else:
-            print(f"Opção inválida: {option}.")
+            print(f"OPÇÃO DESCONHECIDA: {option}.")
